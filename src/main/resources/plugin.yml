@@ -1,6 +1,6 @@
 name: MammaMia
 main: amata1219.mamma.mia.MammaMia
-version: 1.0.1
+version: 1.0.2
 api-version: '1.21.4'
 softdepend: [Essentials]
 author: '@amata1219'
@@ -9,3 +9,8 @@ commands:
   mamiya:
     permission: mamiyer.mamiya
     permission-message: 'You don''t have <permission>'
+
+dependencies:
+  server:
+    - name: Essentials
+      required: true

@@ -4,38 +4,36 @@ plugins {
 }
 
 def pluginFile = file('src/main/resources/plugin.yml')
-
-def pluginDir =  project.hasProperty('pluginDir') ? project.pluginDir : null
+def pluginDir = project.hasProperty('pluginDir') ? project.pluginDir : null
 
 version = pluginFile.text.find(/version: (.+)/) { _, version -> version } ?: 'unknown'
 
 repositories {
     mavenCentral()
+
+    // PaperMC API
     maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
-    maven {
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
+
+    // その他の repo
     maven {
         name = 'essentialsx'
         url = 'https://repo.essentialsx.net/releases/'
     }
 }
 
-task updateDependency(type: Copy) {
-    println 'updateDependency Start'
-    from "${pluginDir}"
-    into "lib/"
-    include "*.jar"
-    println 'updateDependency End'
-}
-
-
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT'
+
+    // ★ Spigot → Paper に変更
+    compileOnly 'io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT'
+    // Paper 1.21.10 の API は "1.21.3" 系に統合されています
+    // ※ Paper API の version は Mojang 版バージョンに合わせるため
+    //    "1.21.10-R0.1-SNAPSHOT" という座標は存在しない点に注意
+
     implementation 'org.jooq:joor:0.9.14'
 
+    // 任意の外部プラグイン
     if (pluginDir) {
         compileOnly fileTree(dir: pluginDir, include: ['*.jar'])
     } else {
@@ -46,14 +44,15 @@ dependencies {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
 tasks.shadowJar {
-    archiveClassifier.set('') // Fat JARの名前に`-all`を追加しない
+    archiveClassifier.set('')
 }
 
 jar {
     manifest {
         attributes(
-            'Main-Class': 'amata1219.mamma.mia.MammaMia' // プラグインのメインクラス
+                'Main-Class': 'amata1219.mamma.mia.MammaMia'
         )
     }
 }

@@ -4,14 +4,8 @@ import amata1219.mamma.mia.MammaMia;
 import amata1219.mamma.mia.config.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.joor.Reflect;
 
 public abstract class TPSMonitor extends BukkitRunnable {
-
-    private static final double[] RECENT_TPS = Reflect.on(Bukkit.getServer())
-            .field("console")
-            .field("recentTps")
-            .get();
 
     /*static {
         Server server = Bukkit.getServer();
@@ -71,13 +65,14 @@ public abstract class TPSMonitor extends BukkitRunnable {
 
     @Override
     public void run() {
+        double[] recentTps = Bukkit.getServer().getTPS();
         if (isAtLowTPS) {
-            if (RECENT_TPS[0] > tpsThreshold()) {
+            if (recentTps[0] > tpsThreshold()) {
                 Bukkit.broadcastMessage(endMessage());
                 isAtLowTPS = false;
             }
         } else {
-            if (RECENT_TPS[0] <= tpsThreshold()) {
+            if (recentTps[0] <= tpsThreshold()) {
                 Bukkit.broadcastMessage(startMessage());
                 isAtLowTPS = true;
             }
